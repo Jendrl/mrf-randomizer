@@ -1,11 +1,12 @@
 ﻿using KaimiraGames;
+using MFRandomizer.Configuration;
 using MFRandomizer.EncountTable;
 using MFRandomizer.Extensions;
 using System.Linq;
 
 namespace MFRandomizer.EnemyRandomizer
 {
-    public class RandomEncounterService(EnemyData enemyData)
+    public class RandomEncounterService(EnemyData enemyData, RandomizerConfiguration configuration)
     {
         private static byte[] _ffSequence = [255, 255];
         private static byte[] _c101Sequence = [193, 1];
@@ -46,12 +47,13 @@ namespace MFRandomizer.EnemyRandomizer
                 823,
             };
             // replace this with a list of encounters containing _EX enemies
-            var scenarioRelevantEncountersNonBoss = new List<int>
+            /*var scenarioRelevantEncountersNonBoss = new List<int>
             {
                 // mid cathedral encounter, mage soldier with skeletons
                 830,
-            };
-            if (earlyFightsExceptions.Contains(encounterId) || scenarioRelevantEncountersNonBoss.Contains(encounterId))
+                834
+            };*/
+            if (earlyFightsExceptions.Contains(encounterId)) // || scenarioRelevantEncountersNonBoss.Contains(encounterId))
                 return false;
 
             // without this safeguard, fort human boss will have infinite turns, better to just randomize normal encounters?
@@ -65,7 +67,10 @@ namespace MFRandomizer.EnemyRandomizer
                     _enemiesById.TryGetValue(enemyId, out var enemy);
                     return enemy?.Contains("_EX") == true;
                 });
-            return startsWithExpectedSequence && !containsEXEnemies;
+            if (containsEXEnemies && !configuration.ShouldRandomizeSpecialEncounters)
+                return false;
+
+            return startsWithExpectedSequence;
         }
     }
 }

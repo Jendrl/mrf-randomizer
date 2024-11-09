@@ -1,9 +1,10 @@
 ﻿using KaimiraGames;
+using MFRandomizer.Configuration;
 using System.Collections.Generic;
 
 namespace MFRandomizer.EncountTable
 {
-    public class EnemyDataLoader
+    public class EnemyDataLoader(RandomizerConfiguration configuration)
     {
         private static string _enemyTablePath = Path.Combine("Tables", "Enemy.dat");
 
@@ -59,7 +60,7 @@ namespace MFRandomizer.EncountTable
                 while (readLine != null);
             }
         }
-        private static ISet<short> CreateReplacementBlacklist(Dictionary<short, string> enemiesById)
+        private ISet<short> CreateReplacementBlacklist(Dictionary<short, string> enemiesById)
         {
             // add EX_encounters to this list, later with the option to make it optional
             var excludedEnemies = new List<int>();
@@ -76,7 +77,8 @@ namespace MFRandomizer.EncountTable
             // bosses
             excludedEnemies.AddRange(enemiesById.Where(kv => kv.Value.Contains("boss", StringComparison.InvariantCultureIgnoreCase)).Select(kv => (int)kv.Key));
             // rivals
-            excludedEnemies.AddRange(enemiesById.Where(kv => kv.Value.Contains("rival", StringComparison.InvariantCultureIgnoreCase)).Select(kv => (int)kv.Key));
+            if (!configuration.ShouldRandomizeRivalEncounters)
+                excludedEnemies.AddRange(enemiesById.Where(kv => kv.Value.Contains("rival", StringComparison.InvariantCultureIgnoreCase)).Select(kv => (int)kv.Key));
             // BUI ids
             excludedEnemies.AddRange(enemiesById.Where(kv => kv.Value.Contains("RC_BUI", StringComparison.InvariantCultureIgnoreCase)).Select(kv => (int)kv.Key));
 

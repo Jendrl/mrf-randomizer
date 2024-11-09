@@ -1,15 +1,16 @@
-﻿using MFRandomizer.EncountTable;
+﻿using MFRandomizer.Configuration;
+using MFRandomizer.EncountTable;
 
 namespace MFRandomizer.EnemyRandomizer
 {
-    public class EnemyRandomizer(EnemyDataLoader enemyDataLoader, EnemyTableReader enemyTableReader)
+    public class EnemyRandomizer(EnemyDataLoader enemyDataLoader, EnemyTableReader enemyTableReader, RandomizerConfiguration configuration)
     {
         public void RandomizeEnemies()
         {
             var outputPath = "Encount.TBL";
 
             var enemyData = enemyDataLoader.Load();
-            var randomEncounterFactory = new RandomEncounterService(enemyData);
+            var randomEncounterFactory = new RandomEncounterService(enemyData, configuration);
 
             using var logStream = new StreamWriter("log.txt");
             using FileStream outputStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
