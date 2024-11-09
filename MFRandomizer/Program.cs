@@ -1,5 +1,5 @@
 ﻿using MFRandomizer.Configuration;
-using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace MFRandomizer
 {
@@ -7,19 +7,12 @@ namespace MFRandomizer
     {
         static void Main(string[] args)
         {
-            IConfiguration config = new ConfigurationBuilder()
-                .AddCommandLine(args)
-                .Build();
-            var randomizerConfiguration = new RandomizerConfiguration();
-            bool.TryParse(config["randomizeSpecialEncounters"], out var shouldRandomizeSpecialEncounters);
-            bool.TryParse(config["randomizeRivalEncounters"], out var shouldRandomizeRivalEncounters);
-            randomizerConfiguration.ShouldRandomizeSpecialEncounters = args.Contains("--randomizeSpecialEncounters") || shouldRandomizeSpecialEncounters;
-            randomizerConfiguration.ShouldRandomizeRivalEncounters = args.Contains("--randomizeRivalEncounters") || shouldRandomizeRivalEncounters;
-            Console.WriteLine(string.Join(", ", args));
-            Console.WriteLine(randomizerConfiguration.ShouldRandomizeSpecialEncounters);
+            var randomizerConfiguration = CommandLineHelper.ParseCommandLine(args);
 
             var randomizer = new EnemyRandomizer.EnemyRandomizer(new(randomizerConfiguration), new(), randomizerConfiguration);
             randomizer.RandomizeEnemies();
+
+            Console.WriteLine($"Randomized with: {JsonSerializer.Serialize(randomizerConfiguration, new JsonSerializerOptions() { WriteIndented = true })}");
         }
     }
 }

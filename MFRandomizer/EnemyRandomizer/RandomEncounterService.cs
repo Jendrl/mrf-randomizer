@@ -51,7 +51,8 @@ namespace MFRandomizer.EnemyRandomizer
             {
                 // mid cathedral encounter, mage soldier with skeletons
                 830,
-                834
+                834,
+                // three lift soldiers in cathedral
             };*/
             if (earlyFightsExceptions.Contains(encounterId)) // || scenarioRelevantEncountersNonBoss.Contains(encounterId))
                 return false;

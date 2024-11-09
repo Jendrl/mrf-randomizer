@@ -7,7 +7,8 @@ namespace MFRandomizer.EnemyRandomizer
     {
         public void RandomizeEnemies()
         {
-            var outputPath = "Encount.TBL";
+            var outputPath = Path.Combine("..", "MFEssentials", "CPK", "CPK.Random", "COMMON", "battle", "table", "Encount.TBL");
+            Directory.CreateDirectory(outputPath);
 
             var enemyData = enemyDataLoader.Load();
             var randomEncounterFactory = new RandomEncounterService(enemyData, configuration);
@@ -21,8 +22,6 @@ namespace MFRandomizer.EnemyRandomizer
             {
                 encounterWriter.Write(encounter);
             }
-
-            Console.WriteLine("Done randomizing!");
         }
     }
 }
